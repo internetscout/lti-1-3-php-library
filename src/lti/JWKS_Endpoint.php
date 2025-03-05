@@ -16,8 +16,8 @@ class JWKS_Endpoint {
         return new JWKS_Endpoint($keys);
     }
 
-    public static function from_issuer(Database $database, $issuer) {
-        $registration = $database->find_registration_by_issuer($issuer);
+    public static function from_issuer(Database $database, $issuer, $client_id) {
+        $registration = $database->find_registration_by_issuer($issuer, $client_id);
         return new JWKS_Endpoint([$registration->get_kid() => $registration->get_tool_private_key()]);
     }
 
