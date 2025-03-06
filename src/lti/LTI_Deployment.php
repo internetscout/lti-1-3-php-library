@@ -19,5 +19,3 @@ class LTI_Deployment {
     }
 
 }
-
-?>
