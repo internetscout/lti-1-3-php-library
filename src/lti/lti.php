@@ -1,6 +1,10 @@
 <?php
 // Import all
-foreach (glob(__DIR__ . "/*.php") as $filename) {
+$filenames = glob(__DIR__ . "/*.php");
+if ($filenames === false) {
+    throw new \Exception("glob() failed.");
+}
+foreach ($filenames as $filename) {
     require_once $filename;
 }
 define(
