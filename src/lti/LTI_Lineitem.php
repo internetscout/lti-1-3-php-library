@@ -13,7 +13,7 @@ class LTI_Lineitem {
     /**
      * @param array<string> $lineitem
      */
-    public function __construct(array $lineitem = null) {
+    public function __construct(?array $lineitem = null) {
         if (empty($lineitem)) {
             return;
         }

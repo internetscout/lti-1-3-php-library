@@ -16,8 +16,8 @@ class LTI_OIDC_Login {
      */
     function __construct(
         Database $database,
-        Cache $cache = null,
-        Cookie $cookie = null
+        ?Cache $cache = null,
+        ?Cookie $cookie = null
     ) {
         $this->db = $database;
         if ($cache === null) {
@@ -36,8 +36,8 @@ class LTI_OIDC_Login {
      */
     public static function new(
         Database $database,
-        Cache $cache = null,
-        Cookie $cookie = null
+        ?Cache $cache = null,
+        ?Cookie $cookie = null
     ): LTI_OIDC_Login {
         return new LTI_OIDC_Login($database, $cache, $cookie);
     }
@@ -50,7 +50,7 @@ class LTI_OIDC_Login {
      *
      * @return Redirect Returns a redirect object containing the fully formed OIDC login URL.
      */
-    public function do_oidc_login_redirect($launch_url, array $request = null) {
+    public function do_oidc_login_redirect($launch_url, ?array $request = null) {
 
         if ($request === null) {
             $request = $_REQUEST;

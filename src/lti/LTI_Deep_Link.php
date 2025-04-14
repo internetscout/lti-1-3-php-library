@@ -26,7 +26,7 @@ class LTI_Deep_Link {
     /**
      * @param array<LTI_Deep_Link_Resource> $resources
      */
-    public function get_response_jwt(array $resources, string $kid = null): string {
+    public function get_response_jwt(array $resources, ?string $kid = null): string {
         $message_jwt = [
             "iss" => $this->registration->get_client_id(),
             "aud" => $this->registration->get_issuer(),
@@ -51,7 +51,7 @@ class LTI_Deep_Link {
     /**
      * @param array<LTI_Deep_Link_Resource> $resources
      */
-    public function output_response_form(array $resources, string $kid = null): void {
+    public function output_response_form(array $resources, ?string $kid = null): void {
         $jwt = $this->get_response_jwt($resources, $kid);
         ?>
         <form id="auto_submit" action="<?= $this->deep_link_settings['deep_link_return_url']; ?>" method="POST">

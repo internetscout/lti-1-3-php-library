@@ -14,7 +14,7 @@ class Redirect {
      */
     public function __construct(
         string $location,
-        string $referer_query = null
+        ?string $referer_query = null
     ) {
         $this->location = $location;
         $this->referer_query = $referer_query;
@@ -33,7 +33,7 @@ class Redirect {
      * redirect otherwise.
      * @param Cookie|null $cookie Cookie to store redirect information (OPTIONAL).
      */
-    public function do_hybrid_redirect(Cookie $cookie = null): void {
+    public function do_hybrid_redirect(?Cookie $cookie = null): void {
         if ($cookie == null) {
             $cookie = new Cookie();
         }
