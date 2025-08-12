@@ -55,9 +55,11 @@ class LTI_Message_Launch_Test extends \PHPUnit\Framework\TestCase
     {
         TestMessage::setup();
 
+        $Cache = new TestCache();
+
         $this->Launch = TestMessage::new(
             new TestDatabase(),
-            new TestCache(),
+            $Cache,
             new TestCookie()
         );
 
@@ -205,30 +207,36 @@ class LTI_Message_Launch_Test extends \PHPUnit\Framework\TestCase
             "Invalid message type"
         );
 
-        # Provide a valid LtiResourceLinkRequest
-        $this->validateLaunch(
-            [
-                "state" => $State,
-                "id_token" => TestMessage::encodeJWT([
-                    "nonce" => "X-NONCE-X",
-                    "iss" => "https://issuer.example",
-                    "aud" => "X-CLIENT-ID-X",
-                    "https://purl.imsglobal.org/spec/lti/claim/deployment_id" =>
-                        "X-DEPLOYMENT-ID-X",
-                    "https://purl.imsglobal.org/spec/lti/claim/message_type" =>
-                        "LtiResourceLinkRequest",
-                    "sub" =>
-                        "X-USER-X",
-                    "https://purl.imsglobal.org/spec/lti/claim/version" =>
-                        "1.3.0",
-                    "https://purl.imsglobal.org/spec/lti/claim/roles" =>
-                        "X-ROLES-X",
-                    "https://purl.imsglobal.org/spec/lti/claim/resource_link" => [
-                        "id" => "X-RESOURCE-ID-X",
-                    ]
-                ]),
-            ]
-        );
+        # construct a valid LtiResourceLinkRequest
+        $Nonce = uniqid("nonce-", true);
+        $Message = [
+            "state" => $State,
+            "id_token" => TestMessage::encodeJWT([
+                "nonce" => $Nonce,
+                "iss" => "https://issuer.example",
+                "aud" => "X-CLIENT-ID-X",
+                "https://purl.imsglobal.org/spec/lti/claim/deployment_id" =>
+                    "X-DEPLOYMENT-ID-X",
+                "https://purl.imsglobal.org/spec/lti/claim/message_type" =>
+                    "LtiResourceLinkRequest",
+                "sub" =>
+                    "X-USER-X",
+                "https://purl.imsglobal.org/spec/lti/claim/version" =>
+                    "1.3.0",
+                "https://purl.imsglobal.org/spec/lti/claim/roles" =>
+                    "X-ROLES-X",
+                "https://purl.imsglobal.org/spec/lti/claim/resource_link" => [
+                    "id" => "X-RESOURCE-ID-X",
+                ]
+            ]),
+        ];
+
+        # should fail if the nonce is unknown
+        $this->validateLaunch($Message, "Invalid nonce");
+
+        # should pass if the nonce is known but has not been used
+        $Cache->cache_nonce($Nonce);
+        $this->validateLaunch($Message);
 
         $this->assertTrue(
             $this->Launch->is_resource_launch()
@@ -249,6 +257,9 @@ class LTI_Message_Launch_Test extends \PHPUnit\Framework\TestCase
         $this->assertFalse(
             $this->Launch->has_ags()
         );
+
+        # replay should fail
+        $this->validateLaunch($Message, "Invalid nonce");
     }
 
     private function validateLaunch(
