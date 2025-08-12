@@ -21,7 +21,7 @@ class Cache {
     }
 
     public function cache_nonce(string $nonce): self {
-        $this->cache['nonce'][$nonce] = true;
+        $this->cache['nonce'][$nonce] = false;
         $this->save_cache();
         return $this;
     }
@@ -31,6 +31,11 @@ class Cache {
         if (!isset($this->cache['nonce'][$nonce])) {
             return false;
         }
+        if ($this->cache['nonce'][$nonce]) {
+            return false;
+        }
+        $this->cache['nonce'][$nonce] = true;
+        $this->save_cache();
         return true;
     }
 

@@ -302,7 +302,7 @@ class LTI_Message_Launch {
             throw new LTI_Exception("No nonce provided", 1);
         }
         if (!$this->cache->check_nonce($this->jwt['body']['nonce'])) {
-            //throw new LTI_Exception("Invalid Nonce",1 );
+            throw new LTI_Exception("Invalid nonce", 1);
         }
         return $this;
     }
